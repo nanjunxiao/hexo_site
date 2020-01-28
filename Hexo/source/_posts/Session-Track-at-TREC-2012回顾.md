@@ -45,15 +45,10 @@ tags: [机器学习,TREC,Ranking SVM]
 
 　　其中w为参数向量, x为文档的特征,y为文档对之间的相对相关性, ξ为松弛变量，m为pair个数。
 
-　　~~使用开源代码svm_light时需注意，它获取pair时是从上到下比较，O(n^2)那种，这时输入文档就不能是全正序或全逆序了，否则就全是正样本或全负样本~~。产生pair代码如下图所示
+　　产生pair代码如下图所示
 　　　　　　　　　　　　![](../../../../img/sessiontrack/svm_light.png) 
 
-　　~~针对这个问题，参考one-class svm优化目标，将负样本反转变为正样本，这样pair全正是不是就避免了上面的问题？求指导~~
-
-
-<font color='red'>**Update 2015-10-12**</font>	
-	
-关于正负pair没有影响这个问题我犯二了，其实很简单，可以这样理解：考虑pair< xi,xj>，约束条件(yi-yj)\*w\*(xi-xj) >= 1
+关于正负pair效果相同没有影响，这个问题其实很简单，可以这样理解：考虑pair< xi,xj>，约束条件(yi-yj)\*w\*(xi-xj) >= 1
 
 1. 正例xi > xj, yi-yj==1. --> 1\*w\*(xi-xj) >= 1
 2. 负例xi < xj, yi-yj==-1. --> <font color='blue'> -1\*w\*(xi-xj) >= 1 等价于 1\*w\*(xj-xi) >=1，这就相当于把负例反转变为正例(SVM样本没有Ranking SVM这种对称性，由于bias b)</font>，所以整个训练过程中全部使用正例(负例反转为正例)，全部使用负例，正负混合都是等价的。
